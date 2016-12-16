@@ -114,6 +114,7 @@ contentweight=$((contentweight-contentweightstep))
 for n in `seq 1 2`;
 do
 normalize_gradients=!normalize_gradients
+normrun="norm$normalize_gradients"
 
 #This loop runs the neural style with the adjusted parameters from the loops above, The total number of images will be the length of first loop multiplied by length of second loop.
 
@@ -125,7 +126,7 @@ do
 		CMDone="th $userpath$neuralstlefile
 				-style_image $stylesource
 				-content_image $userpath$contentsource
-				-output_image $project/$contentsource/$stylesource/$imagename$sep$thisrun$sep$q$sep$sw$styleweight$sep$cw$contentweight$sep$tw$tvweight$sep$normalize_gradients.jpg
+				-output_image $project/$contentsource/$stylesource/$imagename$sep$thisrun$sep$q$sep$sw$styleweight$sep$cw$contentweight$sep$tw$tvweight$sep$normrun.jpg
 				-style_image $stylesource
 				-model_file $userpath$modelfile
 				-proto_file $userpath$protofile

@@ -28,7 +28,7 @@ contentsource="${SOURCE}"
 #image size, optimizer, save/print frequency & quality adam or lbfgs, adam is faster, lbfgs is higher quality
 printiter="50"
 saveiter="0"
-numiter="400"
+numiter="300"
 imagesize="300"
 optimize="adam"
 
@@ -46,7 +46,8 @@ styleweightstep="100"
 contentweight="10"
 contentweightstep="1"
 tvweight=".0001"
-stylescale="1.3"
+stylescale="1.6"
+stylescalestep=".2"
 
 ############################
 #This will set the name of the directory created or used for this project
@@ -98,8 +99,8 @@ sep="_"
 
 for scc in `seq 1 4`;
 do
-stylescale=$(echo "scale=2;$stylescale -.1" | bc)
-tvweight=$(echo "scale=5;$tvweight +.00001" | bc)
+stylescale=$(echo "scale=2;$stylescale - $stylescalestep" | bc)
+tvweight=$(echo "scale=5;$tvweight +.0001" | bc)
 
 #This step creates seven style gradient steps for each of the loops above, adjusting only styleweight and contentweight. Change the gradient steps by adjusting the values below.
 

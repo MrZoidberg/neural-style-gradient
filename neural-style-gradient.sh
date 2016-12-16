@@ -29,7 +29,7 @@ echo contentsource = "$contentsource"
 ############################
 #image size, optimizer, save/print frequency & quality adam or lbfgs, adam is faster, lbfgs is higher quality
 printiter="50"
-saveiter="0"
+saveiter="300"
 numiter="300"
 imagesize="300"
 optimize="adam"
@@ -39,7 +39,7 @@ optimize="adam"
 learningrate="15"
 maxlearningrate=$learningrate
 learningratestep="5"
-learningrate=learningrate-learningratestep
+learningrate=$((learningrate-learningratestep))
 
 normalize_gradients=0
 
@@ -126,15 +126,15 @@ contentweight=$((contentweight-contentweightstep))
 
 for n in `seq 1 4`;
 do
-	if [ $normalize_gradients -eq 0] && [ $learningrate -ge $maxlearningrate ]; then
+	if [[ $normalize_gradients -eq 0 &&  $learningrate -ge $maxlearningrate ]]; then
 		$normalize_gradients="1"
 	fi
 
-	if [ $normalize_gradients -eq 1]; then
-		$learningrate=$(($learningrate-$learningratestep))
+	if (( $normalize_gradients == 1)); then
+		$learningrate=$((learningrate-learningratestep))
   fi
 
-	if [ $normalize_gradients -e 1] && [ $learningrate -lt $(($maxlearningrate - $learningratestep*3)) ]; then
+	if [[ $normalize_gradients -eq 1 && $learningrate -lt $((maxlearningrate - learningratestep*3)) ]]; then
 		$normalize_gradients="0"
 	fi
 
@@ -171,8 +171,11 @@ do
 				-tv_weight $tvweight
 				-save_iter $saveiter
 				-init $initialize
-				-normalize_gradients $normalize_gradients
-				-learning_rate $learning_rate"
+				-learning_rate $learningrate"
+
+	  if (( $normalize_gradients == 1)); then
+		  	$CMDone="$CMDone -normalize_gradients"
+		fi
 
     # display it for the joy of looking at it
 		echo $CMDone

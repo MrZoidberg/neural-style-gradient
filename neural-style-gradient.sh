@@ -126,16 +126,16 @@ contentweight=$((contentweight-contentweightstep))
 
 for n in `seq 1 4`;
 do
-	if [[ $normalize_gradients == 0] && [$learningrate >= $maxlearningrate]]; then
+	if [[ $normalize_gradients -eq 0] && [$learningrate -ge $maxlearningrate]]; then
 		$normalize_gradients=1
 	fi
 
-	if [[ $normalize_gradients == 1]]; then
-		$learningrate=$learningrate - $learningratestep
+	if [[ $normalize_gradients -e 1]]; then
+		$learningrate=$learningrate-$learningratestep
   fi
 
-	if [[ $normalize_gradients == 1] && [l$learningrate < $maxlearningrate - $learningratestep*3]]; then
-		$normalize_gradients = 0
+	if [[ $normalize_gradients -e 1] && [l$learningrate -lt ($maxlearningrate - $learningratestep*3)]]; then
+		$normalize_gradients=0
 	fi
 
 	echo normalize_gradients = $normalize_gradients

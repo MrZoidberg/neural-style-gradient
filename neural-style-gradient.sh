@@ -36,10 +36,10 @@ optimize="adam"
 
 ############################
 #learningrate and normalize_gradients
-learningrate="15"
+learningrate="10"
 maxlearningrate=$learningrate
 learningratestep="5"
-learningrate=$((learningrate-learningratestep))
+learningrate=$((learningrate+learningratestep))
 
 normalize_gradients=0
 
@@ -51,8 +51,8 @@ styleweightstep="100"
 contentweight="11"
 contentweightstep="1"
 tvweight=".0001"
-stylescale="1.8"
-stylescalestep=".3"
+stylescale="1.6"
+stylescalestep=".2"
 
 ############################
 #This will set the name of the directory created or used for this project
@@ -126,16 +126,17 @@ contentweight=$((contentweight-contentweightstep))
 
 for n in `seq 1 4`;
 do
+
 	if [[ $normalize_gradients -eq 0 &&  $learningrate -ge $maxlearningrate ]]; then
-		$normalize_gradients="1"
+		normalize_gradients="1"
 	fi
 
 	if (( $normalize_gradients == 1)); then
-		$learningrate=$((learningrate-learningratestep))
+		learningrate=$((learningrate-learningratestep))
   fi
 
 	if [[ $normalize_gradients -eq 1 && $learningrate -lt $((maxlearningrate - learningratestep*3)) ]]; then
-		$normalize_gradients="0"
+		normalize_gradients="0"
 	fi
 
 	echo normalize_gradients = $normalize_gradients

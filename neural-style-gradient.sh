@@ -46,7 +46,7 @@ normalize_gradients=0
 ############################
 #style and content weighting
 #These are the starting points for your style gradient!
-styleweight="0"
+styleweight="-50"
 styleweightstep="100"
 contentweight="11"
 contentweightstep="1"

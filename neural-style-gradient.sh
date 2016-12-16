@@ -46,9 +46,9 @@ normalize_gradients=0
 ############################
 #style and content weighting
 #These are the starting points for your style gradient!
-styleweight="100"
+styleweight="0"
 styleweightstep="100"
-contentweight="10"
+contentweight="11"
 contentweightstep="1"
 tvweight=".0001"
 stylescale="1.8"
@@ -127,15 +127,15 @@ contentweight=$((contentweight-contentweightstep))
 for n in `seq 1 4`;
 do
 	if [ $normalize_gradients -eq 0] && [ $learningrate -ge $maxlearningrate ]; then
-		$normalize_gradients=1
+		$normalize_gradients="1"
 	fi
 
 	if [ $normalize_gradients -eq 1]; then
-		$learningrate=$learningrate-$learningratestep
+		$learningrate=$(($learningrate-$learningratestep))
   fi
 
 	if [ $normalize_gradients -e 1] && [ $learningrate -lt $(($maxlearningrate - $learningratestep*3)) ]; then
-		$normalize_gradients=0
+		$normalize_gradients="0"
 	fi
 
 	echo normalize_gradients = $normalize_gradients
@@ -148,7 +148,7 @@ for i in `seq 1 1`;
 do
     # scoping loop (i expands here now)
 
-		thisrun = $sw$styleweight$sep$cw$contentweight$sep$sc$stylescale$sep$tw$tvweight$sep$norm$normalize_gradients$sep$lr$learningrate
+		thisrun=$sw$styleweight$sep$cw$contentweight$sep$sc$stylescale$sep$tw$tvweight$sep$norm$normalize_gradients$sep$lr$learningrate
 
 		CMDone="th $userpath$neuralstlefile
 				-style_image $stylesource

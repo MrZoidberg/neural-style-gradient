@@ -51,8 +51,8 @@ styleweightstep="100"
 contentweight="10"
 contentweightstep="1"
 tvweight=".0001"
-stylescale="1.6"
-stylescalestep=".2"
+stylescale="1.8"
+stylescalestep=".3"
 
 ############################
 #This will set the name of the directory created or used for this project
@@ -97,8 +97,13 @@ cw="cw_"
 sc="sc_"
 #tv weight
 tw="tw_"
+#normalaize
+norm="norm_"
+#learning rate
+lr="lr_"
 #seperators
 sep="_"
+
 
 
 
@@ -115,10 +120,8 @@ tvweight=$(echo "scale=5;$tvweight +.0001" | bc)
 
 for q in `seq 1 7`;
 do
-thisrun="sc$scc$sep$stylescale"
 styleweight=$((styleweight+styleweightstep))
 contentweight=$((contentweight-contentweightstep))
-
 #This loop runs turning off and on normalize_gradients
 
 for n in `seq 1 4`;
@@ -138,8 +141,6 @@ do
 	echo normalize_gradients = $normalize_gradients
 	echo learningrate = $learningrate
 
-	normrun="norm${normalize_gradients}_${learningrate}"
-
 #This loop runs the neural style with the adjusted parameters from the loops above, The total number of images will be the length of first loop multiplied by length of second loop.
 
 for i in `seq 1 1`;
@@ -147,10 +148,12 @@ for i in `seq 1 1`;
 do
     # scoping loop (i expands here now)
 
+		thisrun = $sw$styleweight$sep$cw$contentweight$sep$sc$stylescale$sep$tw$tvweight$sep$norm$normalize_gradients$sep$lr$learningrate
+
 		CMDone="th $userpath$neuralstlefile
 				-style_image $stylesource
 				-content_image $contentsource
-				-output_image $project/${contentsourcefile%.*}/${stylesourcefile%.*}/$imagename$sep$thisrun$sep$q$sep$sw$styleweight$sep$cw$contentweight$sep$tw$tvweight$sep_$normrun.jpg
+				-output_image $project/${contentsourcefile%.*}/${stylesourcefile%.*}/$imagename$sep$thisrun.jpg
 				-model_file $userpath$modelfile
 				-proto_file $userpath$protofile
 				-content_layers $contentlayers

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-while getopts "i:e:" opt
-do
+while getopts "i:e:" opt; do
 case $opt in
 s) STYLE="$OPTARG"
 ;;
@@ -23,6 +22,9 @@ cd $HOME/code/zoid-neural-style/
 #style & content source
 stylesource="${STYLE}"
 contentsource="${SOURCE}"
+
+echo stylesource = "$stylesource"
+echo contentsource = "$contentsource"
 
 ############################
 #image size, optimizer, save/print frequency & quality adam or lbfgs, adam is faster, lbfgs is higher quality
@@ -53,9 +55,11 @@ stylescalestep=".2"
 #This will set the name of the directory created or used for this project
 project="${OUTROOT}_gradient"
 
+echo project="${project}"
 ############################
 #Creates Directories for this project
-mkdir -p $project/$(basename $contentsource)/$(basename $stylesource)
+mkdir -p $project/$(basename($contentsource))/$(basename($stylesource))
+echo mkdir -p $project/$(basename($contentsource))/$(basename($stylesource))
 
 ############################
 #location of scripts and models

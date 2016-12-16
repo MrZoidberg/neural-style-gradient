@@ -178,8 +178,8 @@ do
 				-init $initialize"
 #				-learning_rate $learningrate"
 
-	  if [[ $normalize_gradients -eq "1" ]]; then
-		  	$CMDone="$CMDone -normalize_gradients"
+	  if (( $normalize_gradients == 1)); then
+		  	CMDone="${CMDone} -normalize_gradients"
 		fi
 
     # display it for the joy of looking at it

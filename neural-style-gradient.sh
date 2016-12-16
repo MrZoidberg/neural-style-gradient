@@ -124,22 +124,25 @@ styleweight=$((styleweight+styleweightstep))
 contentweight=$((contentweight-contentweightstep))
 #This loop runs turning off and on normalize_gradients
 
-for n in `seq 1 4`;
+for n in `seq 1 2`;
 do
   echo ----
 	echo normalize_gradients = $normalize_gradients
 	echo learningrate = $learningrate
 
+	normalize_gradients=$((1-normalize_gradients))
+
 	if [[ $normalize_gradients -eq 0 &&  $learningrate -ge $maxlearningrate ]]; then
-		normalize_gradients=1
+	#	normalize_gradients=1
 	fi
 
 	if (( $normalize_gradients == 1)); then
-		learningrate=$((learningrate-learningratestep))
+	#	learningrate=$((learningrate-learningratestep))
   fi
 
-	if [[ $normalize_gradients -eq 1 && $learningrate -lt $((maxlearningrate - learningratestep*3)) ]]; then
-		normalize_gradients=0
+	if [[ $normalize_gradients -eq 1 && $learningrate -lt 5 ]]; then
+	#	normalize_gradients=0
+	#	learningrate = 15
 	fi
 
 	echo normalize_gradients = $normalize_gradients

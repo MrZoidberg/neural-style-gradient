@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-while getopts "i:e:" opt; do
+while getopts "s:c:o:" opt; do
 case $opt in
 s) STYLE="$OPTARG"
 ;;
@@ -34,11 +34,11 @@ numiter="300"
 imagesize="300"
 optimize="adam"
 
-#TODO: Loop for learningrate
+#TODO: Loop for learningrate and normalize_gradients
 learningrate="15"
 learningratestep="5"
 
-normalize_gradients="false"
+normalize_gradients=0
 
 ############################
 #style and content weighting
@@ -53,13 +53,15 @@ stylescalestep=".2"
 
 ############################
 #This will set the name of the directory created or used for this project
-project="${OUTROOT}_gradient"
+project="${OUTROOT}/_gradient"
 
 echo project="${project}"
 ############################
 #Creates Directories for this project
-mkdir -p $project/$(basename($contentsource))/$(basename($stylesource))
-echo mkdir -p $project/$(basename($contentsource))/$(basename($stylesource))
+contentsourcefile=${contentsource##*/}
+stylesourcefile=${stylesource##*/}
+mkdir -p $project/${contentsourcefile%.*}/${stylesourcefile%.*}
+echo mkdir -p $project/${contentsourcefile%.*}/${stylesourcefile%.*}
 
 ############################
 #location of scripts and models
@@ -116,10 +118,10 @@ contentweight=$((contentweight-contentweightstep))
 
 #This loop runs turning off and on normalize_gradients
 
-for n in `seq 1 2`;
-do
-normalize_gradients=!normalize_gradients
-normrun="norm$normalize_gradients"
+#for n in `seq 1 2`;
+#do
+#normalize_gradients=$((1-normalize_gradients))
+#normrun="norm$normalize_gradients"
 
 #This loop runs the neural style with the adjusted parameters from the loops above, The total number of images will be the length of first loop multiplied by length of second loop.
 
@@ -130,9 +132,8 @@ do
 
 		CMDone="th $userpath$neuralstlefile
 				-style_image $stylesource
-				-content_image $userpath$contentsource
-				-output_image $project/$contentsource/$stylesource/$imagename$sep$thisrun$sep$q$sep$sw$styleweight$sep$cw$contentweight$sep$tw$tvweight$sep$normrun.jpg
-				-style_image $stylesource
+				-content_image $contentsource
+				-output_image $project/${contentsourcefile%.*}/${stylesourcefile%.*}/$imagename$sep$thisrun$sep$q$sep$sw$styleweight$sep$cw$contentweight$sep$tw$tvweight$sep.jpg
 				-model_file $userpath$modelfile
 				-proto_file $userpath$protofile
 				-content_layers $contentlayers
@@ -149,12 +150,10 @@ do
 				-style_scale $stylescale
 				-tv_weight $tvweight
 				-save_iter $saveiter
-				-init $initialize
-				-normalize_gradients $normalize_gradients"
+				-init $initialize"
 
     # display it for the joy of looking at it
 		echo $CMDone
-
 
     # run it, because that's what the script is for
 		$CMDone

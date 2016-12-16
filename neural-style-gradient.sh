@@ -36,9 +36,9 @@ optimize="adam"
 
 ############################
 #learningrate and normalize_gradients
-learningrate="10"
+learningrate=15
 maxlearningrate=$learningrate
-learningratestep="5"
+learningratestep=5
 learningrate=$((learningrate+learningratestep))
 
 normalize_gradients=0
@@ -126,9 +126,12 @@ contentweight=$((contentweight-contentweightstep))
 
 for n in `seq 1 4`;
 do
+  echo ----
+	echo normalize_gradients = $normalize_gradients
+	echo learningrate = $learningrate
 
 	if [[ $normalize_gradients -eq 0 &&  $learningrate -ge $maxlearningrate ]]; then
-		normalize_gradients="1"
+		normalize_gradients=1
 	fi
 
 	if (( $normalize_gradients == 1)); then
@@ -136,11 +139,12 @@ do
   fi
 
 	if [[ $normalize_gradients -eq 1 && $learningrate -lt $((maxlearningrate - learningratestep*3)) ]]; then
-		normalize_gradients="0"
+		normalize_gradients=0
 	fi
 
 	echo normalize_gradients = $normalize_gradients
 	echo learningrate = $learningrate
+	echo ---
 
 #This loop runs the neural style with the adjusted parameters from the loops above, The total number of images will be the length of first loop multiplied by length of second loop.
 
@@ -171,10 +175,10 @@ do
 				-style_scale $stylescale
 				-tv_weight $tvweight
 				-save_iter $saveiter
-				-init $initialize
-				-learning_rate $learningrate"
+				-init $initialize"
+#				-learning_rate $learningrate"
 
-	  if (( $normalize_gradients == 1)); then
+	  if [[ $normalize_gradients -eq "1" ]]; then
 		  	$CMDone="$CMDone -normalize_gradients"
 		fi
 

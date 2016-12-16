@@ -79,7 +79,7 @@ stylelayers="relu1_1,relu2_1,relu3_1,relu4_1,relu5_1"
 seedit="123"
 
 # backend opencl or clnn cudnn, nn or cpu - nn works best on my machine you might need a different backend
-backend="nn"
+backend="cudnn"
 g_pu="0"
 
 #initialization method (image or random)

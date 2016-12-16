@@ -34,9 +34,12 @@ numiter="300"
 imagesize="300"
 optimize="adam"
 
-#TODO: Loop for learningrate and normalize_gradients
+############################
+#learningrate and normalize_gradients
 learningrate="15"
+maxlearningrate=$learningrate
 learningratestep="5"
+learningrate=learningrate-learningratestep
 
 normalize_gradients=0
 
@@ -88,7 +91,7 @@ imagename="VGG19DEF"
 #shortnames for file naming .jpg files
 #styleweight
 sw="sw_"
-$contentweight
+#$contentweight
 cw="cw_"
 #style scale
 sc="sc_"
@@ -118,10 +121,24 @@ contentweight=$((contentweight-contentweightstep))
 
 #This loop runs turning off and on normalize_gradients
 
-#for n in `seq 1 2`;
-#do
-#normalize_gradients=$((1-normalize_gradients))
-#normrun="norm$normalize_gradients"
+for n in `seq 1 4`;
+do
+	if [[ $normalize_gradients == 0] && [$learningrate >= $maxlearningrate]]; then
+		$normalize_gradients=1
+	fi
+
+	if [[ $normalize_gradients == 1]]; then
+		$learningrate=$learningrate - $learningratestep
+  fi
+
+	if [[ $normalize_gradients == 1] && [l$learningrate < $maxlearningrate - $learningratestep*3]]; then
+		$normalize_gradients = 0
+	fi
+
+	echo normalize_gradients = $normalize_gradients
+	echo learningrate = $learningrate
+
+	normrun="norm${normalize_gradients}_${learningrate}"
 
 #This loop runs the neural style with the adjusted parameters from the loops above, The total number of images will be the length of first loop multiplied by length of second loop.
 
@@ -133,7 +150,7 @@ do
 		CMDone="th $userpath$neuralstlefile
 				-style_image $stylesource
 				-content_image $contentsource
-				-output_image $project/${contentsourcefile%.*}/${stylesourcefile%.*}/$imagename$sep$thisrun$sep$q$sep$sw$styleweight$sep$cw$contentweight$sep$tw$tvweight$sep.jpg
+				-output_image $project/${contentsourcefile%.*}/${stylesourcefile%.*}/$imagename$sep$thisrun$sep$q$sep$sw$styleweight$sep$cw$contentweight$sep$tw$tvweight$sep_$normrun.jpg
 				-model_file $userpath$modelfile
 				-proto_file $userpath$protofile
 				-content_layers $contentlayers
@@ -150,7 +167,9 @@ do
 				-style_scale $stylescale
 				-tv_weight $tvweight
 				-save_iter $saveiter
-				-init $initialize"
+				-init $initialize
+				-normalize_gradients $normalize_gradients
+				-learning_rate $learning_rate"
 
     # display it for the joy of looking at it
 		echo $CMDone

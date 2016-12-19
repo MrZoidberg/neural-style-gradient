@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-import sys, shlex, subprocess, os
+import sys, subprocess, os
 from itertools import combinations, chain
 from argparse import ArgumentParser
 from os.path import expanduser, join, splitext, normpath, basename
@@ -12,13 +12,13 @@ from os.path import expanduser, join, splitext, normpath, basename
 PRINT_ITER = 50
 ITER_COUNT = 150
 SAVE_ITER = ITER_COUNT
-IMAGE_SIZE = 200
+IMAGE_SIZE = 250
 SEED = 123
 
-TV_WEIGHT = 0.0002
-CONTENT_WEIGHT = 9
-STYLE_WEIGHT = 200
-STYLE_SCALE = 1.3
+TV_WEIGHT = 0.0001
+CONTENT_WEIGHT = 5
+STYLE_WEIGHT = 100
+STYLE_SCALE = 1
 INIT_SOURCE = "image"
 
 GPU = 0
@@ -54,10 +54,12 @@ def build_parser():
 
     return parser
 
+
 def powerset(iterable):
     "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
     lst = list(iterable)
     return chain.from_iterable(combinations(lst, r) for r in range(len(lst)+1))
+
 
 def main():
     parser = build_parser()
@@ -77,7 +79,9 @@ def main():
     home = expanduser("~")
     print('The home directory is {0}'.format(home))
 
-    output_dir = expanduser(join(options.out_path, splitext(basename(options.input_style))[0], splitext(basename(options.in_file))[0]))
+    output_dir = expanduser(join(options.out_path,
+                                 splitext(basename(options.input_style))[0],
+                                 splitext(basename(options.in_file))[0]))
     print('The output directory is {0}'.format(output_dir))
 
     scriptPath = normpath(join(home, NEURAL_STYLE_PATH, RUN_SCRIPT_NAME))
@@ -103,7 +107,7 @@ def main():
 -content_image "{content_image}" -image_size {image_size} -output_image "{output_image}" \
 -content_weight {content_weight} -style_weight {style_weight} -save_iter {save_iter} \
 -num_iterations {num_iterations} -content_layers {content_layers} -style_layers {style_layers} \
--gpu {gpu} -optimizer {optimizer} -tv_weight {tv_weight} -backend {backend} -seed {seed}'.format(
+-gpu {gpu} -optimizer {optimizer} -tv_weight {tv_weight} -backend {backend} -seed {seed} -normalize_gradients'.format(
         script = scriptPath,
         style_scale = STYLE_SCALE,
         init = INIT_SOURCE,

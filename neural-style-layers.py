@@ -15,9 +15,10 @@ SAVE_ITER = ITER_COUNT
 IMAGE_SIZE = 250
 SEED = 123
 
-TV_WEIGHT = 0.0002
-CONTENT_WEIGHT = 9
-STYLE_WEIGHT = 250
+
+TV_WEIGHT = 0.0001
+CONTENT_WEIGHT = 5
+STYLE_WEIGHT = 100
 STYLE_SCALE = 1
 INIT_SOURCE = "image"
 
@@ -34,7 +35,7 @@ LAYERS_CONTENT = ["relu4_2"]
 LAYERS_STYLE = ["relu1_1", "relu1_2",
                 "relu2_1", "relu2_2",
                 "relu3_1", "relu3_2", "relu3_3", "relu3_4",
-                "relu4_1", "relu4_3", "relu4_4",
+                "relu4_1", "relu4_2", "relu4_3", "relu4_4",
                 "relu5_1", "relu5_2", "relu5_3", "relu5_4"]
 '''
 LAYERS_STYLE = ["relu1_1",
@@ -60,10 +61,12 @@ def build_parser():
 
     return parser
 
+
 def powerset(iterable):
     "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
     lst = list(iterable)
     return chain.from_iterable(combinations(lst, r) for r in range(len(lst)+1))
+
 
 # Print iterations progress
 def printProgress(iteration, total, prefix='', suffix='', decimals=1, barLength=100):
@@ -86,6 +89,7 @@ def printProgress(iteration, total, prefix='', suffix='', decimals=1, barLength=
         sys.stdout.write('\n')
     sys.stdout.flush()
 
+
 def main():
     parser = build_parser()
     options = parser.parse_args()
@@ -104,7 +108,9 @@ def main():
     home = expanduser("~")
     print('The home directory is {0}'.format(home))
 
-    output_dir = expanduser(join(options.out_path, splitext(basename(options.input_style))[0], splitext(basename(options.in_file))[0]))
+    output_dir = expanduser(join(options.out_path,
+                                 splitext(basename(options.input_style))[0],
+                                 splitext(basename(options.in_file))[0]))
     print('The output directory is {0}'.format(output_dir))
 
     scriptPath = normpath(join(home, NEURAL_STYLE_PATH, RUN_SCRIPT_NAME))
